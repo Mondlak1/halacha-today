@@ -3,21 +3,22 @@ import { DayType, CustomType } from './data';
 export type RootStackParamList = {
   GoogleSignIn: undefined;
   Main: undefined;
-  ActivityDetail: { 
+  ActivityDetail: {
     activityId: string;
     activityName?: string;
     dayType?: DayType;
     tradition?: CustomType;
   };
+  UpcomingEvents: undefined;
+  Quiz: undefined;
 };
 
 export type MainTabParamList = {
   Home: undefined;
-  Calendar: undefined;
-  Activities: { category?: string };
-  WhatCanIDo: undefined;
-  Settings: undefined;
+  Activities: undefined;
   Zmanim: undefined;
+  Calendar: undefined;
+  Settings: undefined;
 };
 
 /**

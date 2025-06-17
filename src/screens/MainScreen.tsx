@@ -5,11 +5,10 @@ import { useTheme } from '../hooks/useTheme';
 
 // Import screens
 import HomeScreen from './HomeScreen';
-import ActivityListScreen from './ActivityListScreen';
 import CalendarScreen from './CalendarScreen';
 import SettingsScreen from './SettingsScreen';
 import WhatCanIDoScreen from './WhatCanIDoScreen';
-import ZmanimScreen from './ZmanimScreen'; // Assuming you'll create this later
+import ZmanimScreen from './ZmanimScreen';
 
 import { MainTabParamList } from '../types/navigation';
 
@@ -41,9 +40,8 @@ const MainScreen = () => {
           let iconName: keyof typeof Ionicons.glyphMap = 'home';
           if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
           else if (route.name === 'Zmanim') iconName = focused ? 'time' : 'time-outline';
-          else if (route.name === 'Activities') iconName = focused ? 'list' : 'list-outline';
+          else if (route.name === 'Activities') iconName = focused ? 'checkmark-circle' : 'checkmark-circle-outline';
           else if (route.name === 'Calendar') iconName = focused ? 'calendar' : 'calendar-outline';
-          else if (route.name === 'WhatCanIDo') iconName = focused ? 'help-circle' : 'help-circle-outline';
           else if (route.name === 'Settings') iconName = focused ? 'settings' : 'settings-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -51,12 +49,10 @@ const MainScreen = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Activities" component={ActivityListScreen} />
+      <Tab.Screen name="Activities" component={WhatCanIDoScreen} />
+      <Tab.Screen name="Zmanim" component={ZmanimScreen} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
-      <Tab.Screen name="WhatCanIDo" component={WhatCanIDoScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
-      {/* Assuming ZmanimScreen will be created for dedicated Zmanim view */}
-      <Tab.Screen name="Zmanim" component={ZmanimScreen} /> 
     </Tab.Navigator>
   );
 };
