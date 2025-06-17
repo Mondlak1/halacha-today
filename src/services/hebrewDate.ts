@@ -194,7 +194,6 @@ let kosherZmanimModule: any;
 let KosherZmanim: KosherZmanimClasses | undefined;
 
 try {
-  // Use CommonJS require syntax
   kosherZmanimModule = require('kosher-zmanim');
   KosherZmanim = {
     JewishCalendar: kosherZmanimModule?.JewishCalendar,
@@ -207,8 +206,6 @@ try {
     Date: kosherZmanimModule?.Date
   };
 } catch (error) {
-  console.error('Error loading kosher-zmanim library:', error);
-  // Create fallback implementations
   KosherZmanim = createFallbackImplementations();
 }
 
@@ -280,18 +277,16 @@ export const setUserLocation = (location: Location): void => {
 const setLocationForZmanim = (zmanimCalendar: any, location: Location): void => {
   try {
     if (!zmanimCalendar || typeof zmanimCalendar.setLatitude !== 'function') {
-      console.warn('ZmanimCalendar not properly initialized');
       return;
     }
     
-    // Set location parameters directly
     zmanimCalendar.setLatitude(location.latitude);
     zmanimCalendar.setLongitude(location.longitude);
     if (location.elevation !== undefined) {
       zmanimCalendar.setElevation(location.elevation);
     }
   } catch (error) {
-    console.error('Error setting location for zmanim:', error);
+    // Silent fail in production
   }
 };
 
@@ -353,7 +348,6 @@ const convertDateToJewishDate = (date: Date): { year: number, month: number, day
  */
 const formatTime = (date: Date): string => {
   try {
-    // Use locale-specific formatting with proper timezone
     const userTimeZone = userLocation.timeZoneId || Intl.DateTimeFormat().resolvedOptions().timeZone;
     
     return date.toLocaleTimeString('en-US', {
@@ -363,8 +357,6 @@ const formatTime = (date: Date): string => {
       timeZone: userTimeZone
     });
   } catch (error) {
-    console.error('Error formatting time:', error);
-    // Fallback formatting
     return date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',

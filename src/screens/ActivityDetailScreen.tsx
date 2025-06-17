@@ -12,7 +12,7 @@ import { getCurrentHebrewDate } from '../services/hebrewDate';
 import StatusBadge from '../components/StatusBadge';
 
 type ActivityDetailScreenProps = {
-  route: RouteProp<RootStackParamList, 'ActivityDetail'>;
+  route: RouteProp<RootStackParamList, 'ActivityDetails'>;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
@@ -132,10 +132,10 @@ const ActivityDetailScreen: React.FC<ActivityDetailScreenProps> = ({ route }) =>
     return activity.explanation[currentDayType] || activity.explanation.regular;
   };
   
-  const handleRelatedActivityPress = (relatedId: string, name: string) => {
-    navigation.push('ActivityDetail', {
+  const handleRelatedActivityPress = (relatedId: string, title: string) => {
+    navigation.push('ActivityDetails', {
       activityId: relatedId,
-      activityName: name,
+      activityName: title,
       dayType: currentDayType,
       tradition: userTradition
     });
@@ -190,7 +190,7 @@ const ActivityDetailScreen: React.FC<ActivityDetailScreenProps> = ({ route }) =>
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={[styles.activityName, { color: colors.text }]}>
-            {activity.name}
+            {activity.title}
           </Text>
           <View style={styles.categoryContainer}>
             <Text style={[styles.categoryLabel, { color: colors.textSecondary }]}>
@@ -232,7 +232,7 @@ const ActivityDetailScreen: React.FC<ActivityDetailScreenProps> = ({ route }) =>
               Sources
             </Text>
             {activity.sources.map((source, index) => (
-              <View key={index} style={styles.sourceItem}>
+              <View key={source.reference ? `${index}-${source.reference}` : `${index}`} style={styles.sourceItem}>
                 <Text style={[styles.sourceText, { color: colors.text }]}>
                   {source.text}
                 </Text>
@@ -254,10 +254,10 @@ const ActivityDetailScreen: React.FC<ActivityDetailScreenProps> = ({ route }) =>
               <TouchableOpacity
                 key={related.id}
                 style={[styles.relatedItem, { backgroundColor: colors.card }]}
-                onPress={() => handleRelatedActivityPress(related.id, related.name)}
+                onPress={() => handleRelatedActivityPress(related.id, related.title)}
               >
                 <Text style={[styles.relatedName, { color: colors.text }]}>
-                  {related.name}
+                  {related.title}
                 </Text>
                 <StatusBadge 
                   status={getActivityStatus(
@@ -266,7 +266,6 @@ const ActivityDetailScreen: React.FC<ActivityDetailScreenProps> = ({ route }) =>
                     userTradition
                   )} 
                   size="small" 
-                  showLabel={false}
                 />
               </TouchableOpacity>
             ))}
@@ -292,7 +291,7 @@ const ActivityDetailScreen: React.FC<ActivityDetailScreenProps> = ({ route }) =>
               if (!customVariation?.explanation || !customVariation.explanation[currentDayType]) return null;
               
               return (
-                <View key={tradition} style={styles.traditionVariation}>
+                <View key={`tradition-${tradition}`} style={styles.traditionVariation}>
                   <Text style={[styles.traditionName, { color: colors.text }]}>
                     {tradition.charAt(0).toUpperCase() + tradition.slice(1)} Tradition:
                   </Text>

@@ -130,7 +130,7 @@ const makeApiRequest = async (path: string, options: RequestInit = {}): Promise<
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        ...(apiKey && { 'Authorization': `Bearer ${apiKey}` }), // Conditionally add Auth header
+        ...(apiKey && { 'Authorization': `Bearer ${apiKey}` }),
         ...options.headers,
       },
       signal: controller.signal,
@@ -146,9 +146,8 @@ const makeApiRequest = async (path: string, options: RequestInit = {}): Promise<
       throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorBody}`);
     }
 
-    // Handle cases where the response might be empty (e.g., 204 No Content)
     if (response.status === 204) {
-        return null; 
+      return null; 
     }
 
     return await response.json();
@@ -156,12 +155,9 @@ const makeApiRequest = async (path: string, options: RequestInit = {}): Promise<
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof Error && error.name === 'AbortError') {
-      console.error('API Request timed out');
       throw new Error('Request timed out');
-    } else {
-      console.error('API Request failed:', error);
-      throw error; // Re-throw other errors
     }
+    throw error;
   }
 };
 
@@ -176,44 +172,50 @@ const importHolidaysFromHebCal = async (targetYear: number): Promise<boolean> =>
   try {
     const response = await fetch(
       `https://www.hebcal.com/hebcal?v=1&cfg=json&year=${targetYear}&month=x&ss=on&mf=on&c=on&geo=geoname&geonameid=${geoId}&m=50&s=on`,
-      { signal: controller.signal } // Only pass the signal, not timeout
+      { signal: controller.signal }
     );
     
-    clearTimeout(timeoutId); // Clear the timeout if the fetch completes
+    clearTimeout(timeoutId);
 
     if (response.ok && response.status === 200) {
-      const data = await response.json();
-      
-      if (data?.items && Array.isArray(data.items)) {
-        const items = data.items;
+      try {
+        const data = await response.json();
         
-        // Store basic holiday data
-        const holidays: Record<string, { date: string; desc?: string[] }> = {};
-        items.forEach((item: any) => {
-          if (item.category === 'holiday' || item.category === 'roshchodesh') {
-            holidays[item.title] = {
-              date: item.date,
-              desc: item.memo ? [item.memo] : undefined,
-            };
-          }
-        });
-        
-        // Store the basic data
-        await AsyncStorage.setItem(
-          `imported_holidays_basic_${targetYear}`,
-          JSON.stringify(holidays)
-        );
-        
-        console.log(`Successfully imported ${Object.keys(holidays).length} holidays from HebCal for ${targetYear}`);
-        return true;
-      } else {
-        console.error('Invalid response structure from HebCal API:', data);
+        if (data?.items && Array.isArray(data.items)) {
+          const items = data.items;
+          
+          // Store basic holiday data
+          const holidays: Record<string, { date: string; desc?: string[] }> = {};
+          items.forEach((item: any) => {
+            if (item.category === 'holiday' || item.category === 'roshchodesh') {
+              holidays[item.title] = {
+                date: item.date,
+                desc: item.memo ? [item.memo] : undefined,
+              };
+            }
+          });
+          
+          // Store the basic data
+          await AsyncStorage.setItem(
+            `imported_holidays_basic_${targetYear}`,
+            JSON.stringify(holidays)
+          );
+          
+          console.log(`Successfully imported ${Object.keys(holidays).length} holidays from HebCal for ${targetYear}`);
+          return true;
+        } else {
+          console.error('Invalid response structure from HebCal API:', data);
+        }
+      } catch (jsonError) {
+        const text = await response.text();
+        console.error('Failed to parse JSON from HebCal API. Response text:', text);
       }
     } else {
-      console.error('Error fetching from HebCal API:', response.status, response.statusText);
+      const text = await response.text();
+      console.error('Error fetching from HebCal API:', response.status, response.statusText, text);
     }
   } catch (apiError) {
-    clearTimeout(timeoutId); // Clear timeout on error too
+    clearTimeout(timeoutId);
     if (apiError instanceof Error && apiError.name === 'AbortError') {
       console.error('HebCal API request timed out');
     } else {
@@ -257,33 +259,24 @@ export const fetchHolidayInfo = async (
   holidayName: string
 ): Promise<HolidayInfo | null> => {
   try {
-    // Try fetching from API
     const data = await makeApiRequest(`/holidays/${encodeURIComponent(holidayName)}`);
     if (data) {
-      // Basic validation of the received data structure
       if (data.name && data.description && Array.isArray(data.traditions)) { 
         return data as HolidayInfo; 
       }
-      console.warn('Received invalid holiday data structure from API');
     }
 
-    // API call failed or returned invalid data, use fallback if available
     if (FALLBACK_HOLIDAY_DATA[holidayName]) {
-      console.log(`Using fallback data for holiday: ${holidayName}`);
       return FALLBACK_HOLIDAY_DATA[holidayName];
     }
 
-    console.error(`No data or fallback found for holiday: ${holidayName}`);
     return null;
 
   } catch (error) {
-    console.error(`Error fetching holiday info for ${holidayName}:`, error);
-    // Attempt to use fallback on error
     if (FALLBACK_HOLIDAY_DATA[holidayName]) {
-      console.log(`Using fallback data for holiday due to error: ${holidayName}`);
       return FALLBACK_HOLIDAY_DATA[holidayName];
     }
-    return null; // Return null if fetch and fallback fail
+    return null;
   }
 };
 

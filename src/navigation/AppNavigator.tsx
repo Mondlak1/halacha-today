@@ -1,17 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { NavigationContainer, LinkingOptions, DarkTheme, DefaultTheme } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Ionicons } from '@expo/vector-icons';
-import { Platform, StatusBar, useColorScheme, Appearance, SafeAreaView } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Platform, StatusBar, useColorScheme, SafeAreaView } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
 // Import screens
-import HomeScreen from '../screens/HomeScreen';
-import ActivityListScreen from '../screens/ActivityListScreen';
 import ActivityDetailsScreen from '../screens/ActivityDetailsScreen';
-import CalendarScreen from '../screens/CalendarScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import GoogleSignInScreen from '../screens/GoogleSignInScreen';
+import MainScreen from '../screens/MainScreen';
 
 // Import types
 import { RootStackParamList, MainTabParamList } from '../types/navigation';
@@ -21,66 +17,24 @@ import {
   setupNotificationResponseListener 
 } from '../services/notifications';
 
-const Stack = createStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator<MainTabParamList>();
-
-// Main tab navigator
-const MainTabNavigator = () => {
-  const { colors } = useTheme();
-  
-  return (
-    <Tab.Navigator 
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: string = '';
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Activities') {
-            iconName = focused ? 'list' : 'list-outline';
-          } else if (route.name === 'Calendar') {
-            iconName = focused ? 'calendar' : 'calendar-outline';
-          } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings' : 'settings-outline';
-          }
-
-          return <Ionicons name={iconName as any} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.text,
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: colors.background,
-          borderTopColor: colors.border,
-          elevation: 0,
-          shadowOpacity: 0,
-          height: Platform.OS === 'ios' ? 88 : 60,
-          paddingBottom: Platform.OS === 'ios' ? 20 : 0,
-        },
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Activities" component={ActivityListScreen} />
-      <Tab.Screen name="Calendar" component={CalendarScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
-};
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Define linking configuration for deep links and notifications
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['halachatoday://', 'https://halachatoday.app'],
   config: {
-    initialRouteName: 'Main',
     screens: {
+      GoogleSignIn: 'signin',
       Main: {
-        initialRouteName: 'Home',
+        path: 'main',
         screens: {
           Home: 'home',
           Activities: 'activities',
           Calendar: 'calendar',
+          WhatCanIDo: 'whatcanido',
           Settings: 'settings',
-        },
+          Zmanim: 'zmanim',
+        } as Record<keyof MainTabParamList, string>,
       },
       ActivityDetail: {
         path: 'activity/:activityId',
@@ -158,34 +112,32 @@ const AppNavigator = () => {
           translucent={Platform.OS === 'android'}
         />
         <Stack.Navigator
+          initialRouteName="GoogleSignIn"
           screenOptions={{
             headerStyle: {
               backgroundColor: colors.background,
-              elevation: 0,
-              shadowOpacity: 0,
-              borderBottomWidth: 1,
-              borderBottomColor: colors.border,
             },
             headerTintColor: colors.text,
-            headerTitleStyle: {
-              fontWeight: 'bold',
+            headerShadowVisible: false,
+            contentStyle: {
+              backgroundColor: colors.background,
             },
-            cardStyle: { backgroundColor: colors.background },
           }}
         >
-          <Stack.Screen 
-            name="Main" 
-            component={MainTabNavigator} 
-            options={{ headerShown: false }} 
+          <Stack.Screen
+            name="GoogleSignIn"
+            component={GoogleSignInScreen}
+            options={{ headerShown: false }}
           />
-          <Stack.Screen 
-            name="ActivityDetails" 
-            component={ActivityDetailsScreen} 
-            options={({ route }) => ({ 
-              title: route.params?.activityName || 'Activity Details',
-              headerBackTitle: 'Back',
-              animation: 'slide_from_right',
-            })} 
+          <Stack.Screen
+            name="Main"
+            component={MainScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ActivityDetail"
+            component={ActivityDetailsScreen}
+            options={({ route }: { route: any }) => ({ title: route.params?.activityName || 'Activity Details' })}
           />
         </Stack.Navigator>
       </NavigationContainer>

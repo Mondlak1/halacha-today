@@ -1,29 +1,28 @@
 # Halacha Today
 
-A mobile app that helps users understand Jewish law (Halacha) and what activities are permitted or forbidden on any given day.
+A modern app for daily Jewish observance and halacha guidance.
 
 ## Features
 
-- Shows current Hebrew date and Jewish events
-- Lists activities with their permissibility status
-- Provides explanations for why activities are permitted or forbidden
-- Supports different day types (regular, Shabbat, Yom Tov, fast days)
-- Location-based calculations for accurate times
-- Push notifications for important events
+- Daily zmanim (prayer times)
+- Jewish calendar integration
+- Halacha guidance
+- Location-based services
+- Secure authentication
+- Offline support
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js 16 or later
 - npm or yarn
 - Expo CLI
-- Android Studio (for Android development)
-- Xcode (for iOS development, macOS only)
+- iOS/Android development environment (for native builds)
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/halacha-today.git
+git clone https://github.com/your-username/halacha-today.git
 cd halacha-today
 ```
 
@@ -32,118 +31,87 @@ cd halacha-today
 npm install
 ```
 
-3. Start the development server:
+3. Create a `.env` file based on `.env.example`:
+```bash
+cp .env.example .env
+```
+
+4. Update the environment variables in `.env` with your configuration.
+
+## Development
+
+1. Start the development server:
 ```bash
 npm start
 ```
 
-## Development
+2. Run on iOS:
+```bash
+npm run ios
+```
 
-- Press 'a' to open on Android
-- Press 'i' to open on iOS
-- Press 'w' to open in web browser
-- Scan QR code with Expo Go (Android) or Camera app (iOS)
+3. Run on Android:
+```bash
+npm run android
+```
 
 ## Building for Production
 
-### Android
-
-1. Create a keystore:
-```bash
-keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
-```
-
-2. Configure app.json with your keystore details:
-```json
-{
-  "expo": {
-    "android": {
-      "package": "com.halachatoday.app",
-      "versionCode": 1,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    }
-  }
-}
-```
-
-3. Build the APK:
-```bash
-eas build -p android
-```
-
 ### iOS
 
-1. Configure app.json with your Apple Developer account details:
-```json
-{
-  "expo": {
-    "ios": {
-      "bundleIdentifier": "com.halachatoday.app",
-      "buildNumber": "1.0.0"
-    }
-  }
-}
+1. Configure your Apple Developer account in `eas.json`
+2. Build the app:
+```bash
+eas build --platform ios
 ```
 
-2. Build the IPA:
-```bash
-eas build -p ios
-```
+### Android
 
-### Web
-
-1. Build the web version:
+1. Configure your Google Play Console account in `eas.json`
+2. Build the app:
 ```bash
-eas build -p web
+eas build --platform android
 ```
 
 ## Deployment
 
-### Android Play Store
+### iOS App Store
 
-1. Create a new app in the Google Play Console
-2. Upload the signed APK
-3. Fill in store listing details
-4. Submit for review
-
-### Apple App Store
-
-1. Create a new app in App Store Connect
-2. Upload the IPA
-3. Fill in store listing details
-4. Submit for review
-
-### Web
-
-1. Deploy to your preferred hosting service (e.g., Vercel, Netlify)
-2. Configure custom domain if needed
-
-## Environment Variables
-
-Create a `.env` file in the root directory with the following variables:
-
+1. Submit the build:
+```bash
+eas submit --platform ios
 ```
-API_URL=your_api_url
-GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+### Google Play Store
+
+1. Submit the build:
+```bash
+eas submit --platform android
 ```
+
+## Security
+
+The app implements several security measures:
+
+- Secure storage for sensitive data
+- Encrypted communication
+- Token-based authentication
+- Rate limiting
+- Input validation
+- Error handling
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## Support
 
-- Hebcal for Jewish calendar calculations
-- Expo team for the amazing framework
-- All contributors and supporters of the project 
+For support, email support@halachatoday.com or open an issue in the repository. 

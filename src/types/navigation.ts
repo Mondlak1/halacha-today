@@ -1,8 +1,9 @@
 import { DayType, CustomType } from './data';
 
 export type RootStackParamList = {
-  Main: { screen?: keyof MainTabParamList };
-  ActivityDetails: { 
+  GoogleSignIn: undefined;
+  Main: undefined;
+  ActivityDetail: { 
     activityId: string;
     activityName?: string;
     dayType?: DayType;
@@ -14,7 +15,9 @@ export type MainTabParamList = {
   Home: undefined;
   Calendar: undefined;
   Activities: { category?: string };
+  WhatCanIDo: undefined;
   Settings: undefined;
+  Zmanim: undefined;
 };
 
 /**

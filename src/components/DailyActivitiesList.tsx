@@ -19,6 +19,7 @@ import { useTheme } from '../hooks/useTheme';
 import { getActivities, getActivityStatus } from '../services/activities';
 import { getCurrentHebrewDate } from '../services/hebrewDate';
 import StatusBadge from './StatusBadge';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type DailyActivitiesNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -149,7 +150,7 @@ const DailyActivitiesList = ({
       <Animated.View
         style={[
           styles.activityItem,
-          { 
+          {
             backgroundColor: colors.card,
             opacity: listItemAnimations[index],
             transform: [{
@@ -161,6 +162,12 @@ const DailyActivitiesList = ({
           }
         ]}
       >
+        <LinearGradient
+          colors={[colors.primary + '55', colors.secondary + '33', '#ffffff22']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
         <TouchableOpacity
           style={styles.activityContent}
           onPress={() => handleActivityPress(item)}
@@ -262,7 +269,7 @@ const DailyActivitiesList = ({
       <FlatList
         data={displayedActivities}
         renderItem={renderActivityItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id ? `${item.id}-${index}` : `${index}`}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         removeClippedSubviews={true}
@@ -301,17 +308,18 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   activityItem: {
-    marginBottom: 12,
-    borderRadius: 12,
+    borderRadius: 16,
+    marginBottom: 16,
     overflow: 'hidden',
+    borderWidth: 1.2,
+    borderColor: 'rgba(255,255,255,0.35)',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.10,
+    shadowRadius: 8,
+    elevation: 4,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    position: 'relative',
   },
   activityContent: {
     padding: 16,

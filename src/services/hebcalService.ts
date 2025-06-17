@@ -7,10 +7,21 @@ export interface HebcalEvent {
   type: DayType;
 }
 
+export interface Zmanim {
+  candleLighting?: string;
+  havdalah?: string;
+  shema?: string;
+  shacharit?: string;
+  minchaGedola?: string;
+  minchaKetana?: string;
+  location: string;
+}
+
 export interface HebcalDayData {
   date: string;
   events: HebcalEvent[];
   dayType: DayType;
+  zmanim: Zmanim;
 }
 
 export async function getHebcalDayData(city = 'Jerusalem'): Promise<HebcalDayData> {
@@ -59,7 +70,10 @@ export async function getHebcalDayData(city = 'Jerusalem'): Promise<HebcalDayDat
   return {
     date: today.toString(),
     events: hebcalEvents,
-    dayType
+    dayType,
+    zmanim: {
+      location: city
+    }
   };
 }
 

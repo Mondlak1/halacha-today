@@ -11,6 +11,7 @@ import { useTheme } from '../hooks/useTheme';
 import { getActivities, getCategories, getActivityStatus } from '../services/activities';
 import { getCurrentHebrewDate } from '../services/hebrewDate';
 import StatusBadge from '../components/StatusBadge';
+import { BlurView } from 'expo-blur';
 
 type ActivityListScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 type ActivityListScreenRouteProp = RouteProp<MainTabParamList, 'Activities'>;
@@ -301,52 +302,48 @@ const ActivityListScreen = () => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
-        <Text style={[styles.screenTitle, { color: colors.text }]}>
-          Activities
-        </Text>
-        <Text style={[styles.dayTypeLabel, { color: colors.textSecondary }]}>
-          Showing for: {currentDayType.charAt(0).toUpperCase() + currentDayType.slice(1)}
-        </Text>
-      </View>
-      
-      {/* Search bar */}
-      <View style={[styles.searchContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <Ionicons name="search" size={20} color={colors.textSecondary} />
-        <TextInput
-          style={[styles.searchInput, { color: colors.text }]}
-          placeholder="Search activities..."
-          placeholderTextColor={colors.textSecondary}
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchQuery('')}>
-            <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
-          </TouchableOpacity>
-        )}
-      </View>
-      
-      {/* Category filters */}
-      {renderCategoryFilters()}
-      
-      {/* Activities list */}
-      {filteredActivities.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-            No activities match your search.
-          </Text>
-        </View>
-      ) : (
-        <SectionList
-          sections={sections}
-          renderItem={renderActivityItem}
-          renderSectionHeader={renderSectionHeader}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          stickySectionHeadersEnabled={true}
-        />
-      )}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Search bar and filters in a BlurView card */}
+        <BlurView intensity={50} tint="light" style={styles.glassCard}>
+          <View style={styles.header}>
+            <Text style={[styles.screenTitle, { color: colors.text }]}>Activities</Text>
+            <Text style={[styles.dayTypeLabel, { color: colors.textSecondary }]}>Showing for: {currentDayType.charAt(0).toUpperCase() + currentDayType.slice(1)}</Text>
+          </View>
+          <View style={[styles.searchContainer, { backgroundColor: 'transparent', borderColor: colors.border }]}> 
+            <Ionicons name="search" size={20} color={colors.textSecondary} />
+            <TextInput
+              style={[styles.searchInput, { color: colors.text }]}
+              placeholder="Search activities..."
+              placeholderTextColor={colors.textSecondary}
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
+              </TouchableOpacity>
+            )}
+          </View>
+          {renderCategoryFilters()}
+        </BlurView>
+        {/* Activities list in a BlurView card */}
+        <BlurView intensity={40} tint="light" style={styles.glassCard}>
+          {filteredActivities.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No activities match your search.</Text>
+            </View>
+          ) : (
+            <SectionList
+              sections={sections}
+              renderItem={renderActivityItem}
+              renderSectionHeader={renderSectionHeader}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.listContent}
+              stickySectionHeadersEnabled={true}
+            />
+          )}
+        </BlurView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -491,6 +488,22 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  glassCard: {
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    overflow: 'hidden',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 32,
   },
 });
 

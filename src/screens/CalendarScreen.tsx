@@ -17,6 +17,7 @@ import { useTheme } from '../hooks/useTheme';
 import { getCurrentHebrewDate } from '../services/hebrewDate';
 import { importHolidayData, preloadHolidayImages } from '../services/aiService';
 import JewishLoadingSpinner from '../components/JewishLoadingSpinner';
+import { BlurView } from 'expo-blur';
 
 // Define a simple date interface for our app
 interface DateData {
@@ -209,16 +210,16 @@ const CalendarScreen = () => {
   };
 
   // Render a holiday item
-  const renderHolidayItem = (holiday: Holiday, index: number) => {
+  const renderHolidayItem = (holiday: Holiday) => {
     return (
       <Animated.View
-        key={`${holiday.title}-${index}`}
+        key={holiday.id}
         style={[
           styles.holidayItem,
           { 
             backgroundColor: colors.card,
             opacity: fadeAnim,
-            transform: [{ translateY: Animated.multiply(slideAnim, 1.2 + (index * 0.2)) }]
+            transform: [{ translateY: Animated.multiply(slideAnim, 1.2) }]
           }
         ]}
       >
@@ -299,119 +300,61 @@ const CalendarScreen = () => {
   }
 
   return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.contentContainer}
-      showsVerticalScrollIndicator={false}
-    >
-      <Animated.View
-        style={[
-          styles.calendarContainer,
-          { 
-            backgroundColor: colors.card,
-            opacity: calendarAnim,
-            transform: [{ scale: calendarAnim }]
-          }
-        ]}
-      >
-        {renderSimpleCalendar()}
-      </Animated.View>
-
-      <Animated.View
-        style={[
-          styles.dateInfoContainer,
-          { 
-            backgroundColor: colors.card,
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }]
-          }
-        ]}
-      >
-        <View style={styles.dateInfo}>
-          <Text style={[styles.hebrewDateTitle, { color: colors.secondary }]}>
-            Hebrew Date
-          </Text>
-          <Text style={[styles.hebrewDateText, { color: colors.text }]}>
-            {hebrewDate || 'Loading...'}
-          </Text>
-        </View>
-        
-        <TouchableOpacity 
-          style={[styles.refreshButton, { backgroundColor: colors.primary + '15' }]}
-          onPress={handleImportData}
-          disabled={isImporting}
-        >
-          {isImporting ? (
-            <JewishLoadingSpinner size={18} color={colors.primary} />
-          ) : (
-            <Ionicons name="refresh" size={18} color={colors.primary} />
-          )}
-        </TouchableOpacity>
-      </Animated.View>
-
-      {importStatus && (
-        <Animated.View
-          style={[
-            styles.importStatusContainer,
-            { 
-              backgroundColor: colors.card,
-              opacity: fadeAnim 
-            }
-          ]}
-        >
-          {isImporting ? (
-            <JewishLoadingSpinner size={20} color={colors.primary} />
-          ) : (
-            <Ionicons
-              name={importStatus.includes('completed') ? 'checkmark-circle' : 'alert-circle'}
-              size={20}
-              color={importStatus.includes('completed') ? colors.allowed : colors.conditional}
-            />
-          )}
-          <Text
-            style={[
-              styles.importStatusText,
-              { color: importStatus.includes('completed') ? colors.allowed : colors.conditional }
-            ]}
-          >
-            {importStatus}
-          </Text>
-        </Animated.View>
-      )}
-
-      <Animated.View
-        style={[
-          styles.holidaysContainer,
-          { opacity: fadeAnim }
-        ]}
-      >
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>
-          {holidays.length > 0
-            ? `Holidays on ${new Date(selectedDate).toLocaleDateString()}`
-            : `No holidays on ${new Date(selectedDate).toLocaleDateString()}`}
-        </Text>
-        
-        {holidays.length > 0 ? (
-          holidays.map((holiday, index) => renderHolidayItem(holiday, index))
-        ) : (
-          <Animated.View
-            style={[
-              styles.noHolidaysContainer,
-              { 
-                backgroundColor: colors.card,
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }]
-              }
-            ]}
-          >
-            <Ionicons name="calendar-outline" size={32} color={colors.secondary} />
-            <Text style={[styles.noHolidaysText, { color: colors.secondary }]}>
-              No Jewish holidays on this date
-            </Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}> 
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Calendar header in BlurView */}
+        <BlurView intensity={50} tint="light" style={styles.glassCard}>
+          <Animated.View style={[styles.calendarContainer, { backgroundColor: 'transparent', opacity: calendarAnim, transform: [{ scale: calendarAnim }] }]}> 
+            {renderSimpleCalendar()}
           </Animated.View>
+        </BlurView>
+        {/* Date info in BlurView */}
+        <BlurView intensity={40} tint="light" style={styles.glassCard}>
+          <Animated.View style={[styles.dateInfoContainer, { backgroundColor: 'transparent', opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}> 
+            <View style={styles.dateInfo}>
+              <Text style={[styles.hebrewDateTitle, { color: colors.secondary }]}>Hebrew Date</Text>
+              <Text style={[styles.hebrewDateText, { color: colors.text }]}>{hebrewDate || 'Loading...'}</Text>
+            </View>
+            <TouchableOpacity style={[styles.refreshButton, { backgroundColor: colors.primary + '15' }]} onPress={handleImportData} disabled={isImporting}>
+              {isImporting ? (
+                <JewishLoadingSpinner size={18} color={colors.primary} />
+              ) : (
+                <Ionicons name="refresh" size={18} color={colors.primary} />
+              )}
+            </TouchableOpacity>
+          </Animated.View>
+        </BlurView>
+        {/* Import status in BlurView */}
+        {importStatus && (
+          <BlurView intensity={30} tint="light" style={styles.glassCard}>
+            <Animated.View style={[styles.importStatusContainer, { backgroundColor: 'transparent', opacity: fadeAnim }]}> 
+              {isImporting ? (
+                <JewishLoadingSpinner size={20} color={colors.primary} />
+              ) : (
+                <Ionicons name={importStatus.includes('completed') ? 'checkmark-circle' : 'alert-circle'} size={20} color={importStatus.includes('completed') ? colors.allowed : colors.conditional} />
+              )}
+              <Text style={[styles.importStatusText, { color: importStatus.includes('completed') ? colors.allowed : colors.conditional }]}>{importStatus}</Text>
+            </Animated.View>
+          </BlurView>
         )}
-      </Animated.View>
-    </ScrollView>
+        {/* Holidays in BlurView */}
+        <BlurView intensity={40} tint="light" style={styles.glassCard}>
+          <Animated.View style={[styles.holidaysContainer, { opacity: fadeAnim }]}> 
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              {holidays.length > 0 ? `Holidays on ${new Date(selectedDate).toLocaleDateString()}` : `No holidays on ${new Date(selectedDate).toLocaleDateString()}`}
+            </Text>
+            {holidays.length > 0 ? (
+              holidays.map((holiday) => renderHolidayItem(holiday))
+            ) : (
+              <Animated.View style={[styles.noHolidaysContainer, { backgroundColor: 'transparent', opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}> 
+                <Ionicons name="calendar-outline" size={32} color={colors.secondary} />
+                <Text style={[styles.noHolidaysText, { color: colors.secondary }]}>No Jewish holidays on this date</Text>
+              </Animated.View>
+            )}
+          </Animated.View>
+        </BlurView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -656,6 +599,22 @@ const styles = StyleSheet.create({
   dateButtonText: {
     fontSize: 16,
     fontWeight: '500',
+  },
+  glassCard: {
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    overflow: 'hidden',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 32,
   },
 });
 

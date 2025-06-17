@@ -92,8 +92,8 @@ const HolidayInfoDisplay: React.FC<HolidayInfoDisplayProps> = ({ date }) => {
       )}
       
       {/* Display holiday information if available */}
-      {holidayInfo && holidayInfo.map((holiday, index) => (
-        <View key={index} style={styles.holidayContainer}>
+      {holidayInfo && holidayInfo.map((holiday) => (
+        <View key={holiday.id || holiday.name} style={styles.holidayContainer}>
           <Text style={styles.holidayTitle}>{holiday.name}</Text>
           
           {holiday.hebrew && (

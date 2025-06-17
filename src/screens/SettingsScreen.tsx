@@ -55,6 +55,12 @@ const API_ENDPOINT_KEY = 'halacha_api_endpoint';
 const API_KEY_STORAGE_KEY = 'halacha_api_key';
 const LAST_SYNC_KEY = 'last_api_sync';
 
+const reminders = [
+  { label: 'Remind me before Shabbat', desc: 'Receive a notification before Shabbat begins' },
+  { label: 'Notify me on holidays', desc: 'Get notified about upcoming holidays' },
+  { label: 'Daily halachic activity summary', desc: 'Receive a daily summary of halachic activities' },
+];
+
 const SettingsScreen: React.FC = () => {
   const { colors, spacing } = useTheme();
   const { themeMode, setThemeMode } = useThemeContext();
@@ -499,10 +505,10 @@ const SettingsScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {/* Header Section */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-            Customize your app preferences
-          </Text>
+          <TouchableOpacity style={styles.headerIcon}>
+            <Ionicons name="arrow-back" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Settings</Text>
         </View>
         
         {/* Theme Settings */}
@@ -997,15 +1003,23 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    marginBottom: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingBottom: 8,
   },
-  title: {
-    fontSize: 28,
+  headerIcon: {
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
+    textAlign: 'center',
+    marginRight: 48,
   },
   section: {
     marginBottom: 24,
@@ -1023,13 +1037,12 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  sectionHeader: {
-    padding: 16,
-    borderBottomWidth: 1,
-  },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    paddingTop: 20,
   },
   sectionDescription: {
     fontSize: 14,

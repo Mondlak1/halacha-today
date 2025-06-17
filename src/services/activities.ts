@@ -4262,19 +4262,17 @@ export const getActivities = async (): Promise<Activity[]> => {
  */
 export const getActivityById = async (id: string): Promise<Activity | null> => {
   try {
-    // Try to fetch from API if configured
     const apiResult = await makeApiRequest<Activity>(`/activities/${id}`);
     if (apiResult && apiResult.success && apiResult.data) {
       return apiResult.data;
     }
   } catch (error) {
-    console.error('Error fetching activity from API:', error);
+    // Silent fail in production
   }
-  // Fallback to local data
+  
   try {
     return ACTIVITIES.find(activity => activity.id === id) || null;
   } catch (error) {
-    console.error('Error getting activity by ID:', error);
     return null;
   }
 };
@@ -4286,7 +4284,6 @@ export const getActivityByIdSync = (id: string): Activity | null => {
   try {
     return ACTIVITIES.find(activity => activity.id === id) || null;
   } catch (error) {
-    console.error('Error getting activity by ID:', error);
     return null;
   }
 };

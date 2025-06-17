@@ -19,11 +19,8 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/notification-icon.png",
-          "color": "#ffffff",
-          "sounds": [
-            "./assets/notification-sound.wav"
-          ]
+          "icon": "./assets/icon.png",
+          "color": "#ffffff"
         }
       ]
     ],
@@ -35,7 +32,8 @@
           "remote-notification"
         ]
       },
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "adaptiveIcon": {
@@ -43,7 +41,13 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.halachatoday.app",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": [
+        "NOTIFICATIONS",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "icon": "./assets/icon.png"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -52,6 +56,12 @@
       "eas": {
         "projectId": "87a8d960-b072-4d5b-b1c9-787153bbfb7b"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/your-project-id"
     }
   }
 }
