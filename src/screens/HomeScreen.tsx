@@ -91,15 +91,38 @@ const HomeScreen = () => {
             </View>
           )}
           <View style={styles.actionButtonsContainer}>
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.accent1 }]} onPress={() => navigation.navigate('Main', { screen: 'Calendar' })}>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.accent1 }]}
+              onPress={() => navigation.navigate('Main', { screen: 'Calendar' })}
+            >
               <Ionicons name="calendar-outline" size={24} color={colors.text} />
               <Text style={[styles.actionButtonText, { color: colors.text }]}>Calendar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.accent2 }]} onPress={() => navigation.navigate('Main', { screen: 'Activities' })}>
-              <Ionicons name="list-outline" size={24} color={colors.text} />
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.accent2 }]}
+              onPress={() => navigation.navigate('Main', { screen: 'Activities' })}
+            >
+              <Ionicons name="checkmark-circle-outline" size={24} color={colors.text} />
               <Text style={[styles.actionButtonText, { color: colors.text }]}>Activities</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.accent3 }]} onPress={() => navigation.navigate('Main', { screen: 'Settings' })}>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.accent3 }]}
+              onPress={() => navigation.navigate('UpcomingEvents')}
+            >
+              <Ionicons name="star-outline" size={24} color={colors.text} />
+              <Text style={[styles.actionButtonText, { color: colors.text }]}>Events</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.accent1 }]}
+              onPress={() => navigation.navigate('Quiz')}
+            >
+              <Ionicons name="help-circle-outline" size={24} color={colors.text} />
+              <Text style={[styles.actionButtonText, { color: colors.text }]}>Quiz</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: colors.accent2 }]}
+              onPress={() => navigation.navigate('Main', { screen: 'Settings' })}
+            >
               <Ionicons name="settings-outline" size={24} color={colors.text} />
               <Text style={[styles.actionButtonText, { color: colors.text }]}>Settings</Text>
             </TouchableOpacity>

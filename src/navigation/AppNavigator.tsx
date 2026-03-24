@@ -8,6 +8,8 @@ import * as Notifications from 'expo-notifications';
 import ActivityDetailsScreen from '../screens/ActivityDetailsScreen';
 import GoogleSignInScreen from '../screens/GoogleSignInScreen';
 import MainScreen from '../screens/MainScreen';
+import UpcomingEventsScreen from '../screens/UpcomingEventsScreen';
+import QuizScreen from '../screens/QuizScreen';
 
 // Import types
 import { RootStackParamList, MainTabParamList } from '../types/navigation';
@@ -30,12 +32,13 @@ const linking: LinkingOptions<RootStackParamList> = {
         screens: {
           Home: 'home',
           Activities: 'activities',
-          Calendar: 'calendar',
-          WhatCanIDo: 'whatcanido',
-          Settings: 'settings',
           Zmanim: 'zmanim',
+          Calendar: 'calendar',
+          Settings: 'settings',
         } as Record<keyof MainTabParamList, string>,
       },
+      UpcomingEvents: 'events',
+      Quiz: 'quiz',
       ActivityDetail: {
         path: 'activity/:activityId',
         parse: {
@@ -133,6 +136,16 @@ const AppNavigator = () => {
             name="Main"
             component={MainScreen}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="UpcomingEvents"
+            component={UpcomingEventsScreen}
+            options={{ title: 'Upcoming Events' }}
+          />
+          <Stack.Screen
+            name="Quiz"
+            component={QuizScreen}
+            options={{ title: 'Daily Quiz' }}
           />
           <Stack.Screen
             name="ActivityDetail"
